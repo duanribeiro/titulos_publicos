@@ -5,21 +5,23 @@ from datetime import datetime, timedelta
 
 
 def adicionar_dias_uteis(data, dias):
-    nova_data = adicionar_dias_corridos(data=data, dias=dias)
+    for dia in range(dias):
+        data = adicionar_dias_corridos(data=data, dias=1)
 
-    while not np.is_busday(dates=nova_data, weekmask='1111100', holidays=holidays):
-        nova_data = adicionar_dias_corridos(data=nova_data, dias=1)
+        while not np.is_busday(dates=data, weekmask='1111100', holidays=holidays):
+            data = adicionar_dias_corridos(data=data, dias=1)
 
-    return nova_data
+    return data
 
 
 def remover_dias_uteis(data, dias):
-    nova_data = remover_dias_corridos(data=data, dias=dias)
+    for dia in range(dias):
+        data = remover_dias_corridos(data=data, dias=1)
 
-    while not np.is_busday(dates=nova_data, weekmask='1111100', holidays=holidays):
-        nova_data = remover_dias_corridos(data=nova_data, dias=1)
+        while not np.is_busday(dates=data, weekmask='1111100', holidays=holidays):
+            data = remover_dias_corridos(data=data, dias=1)
 
-    return nova_data
+    return data
 
 
 def adicionar_dias_corridos(data, dias):

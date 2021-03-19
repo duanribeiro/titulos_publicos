@@ -1,6 +1,6 @@
 import pandas as pd
 from helpers import calendario, formulas
-from regras import DECIMAIS_TX_CUPOM
+from padroes import DECIMAIS_TX_CUPOM
 
 
 def calculo_montante_NTNF(data_compra, data_vencimento, valor_investido, preco_unitario):

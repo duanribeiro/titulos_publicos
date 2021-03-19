@@ -1,5 +1,5 @@
 import math
-from regras import DECIMAIS_TAXAS_EQUIVALENTES, DECIMAIS_TX_CUPOM
+from padroes import DECIMAIS_TAXAS_EQUIVALENTES, DECIMAIS_TX_CUPOM
 
 
 def truncar(numero, casas):
