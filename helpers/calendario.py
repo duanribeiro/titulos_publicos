@@ -8,7 +8,7 @@ def adicionar_dias_uteis(data, dias):
     for dia in range(dias):
         data = adicionar_dias_corridos(data=data, dias=1)
 
-        while not np.is_busday(dates=data, weekmask='1111100', holidays=holidays):
+        while not np.is_busday(dates=data, weekmask='1111100', holidays=feriados):
             data = adicionar_dias_corridos(data=data, dias=1)
 
     return data
@@ -18,7 +18,7 @@ def remover_dias_uteis(data, dias):
     for dia in range(dias):
         data = remover_dias_corridos(data=data, dias=1)
 
-        while not np.is_busday(dates=data, weekmask='1111100', holidays=holidays):
+        while not np.is_busday(dates=data, weekmask='1111100', holidays=feriados):
             data = remover_dias_corridos(data=data, dias=1)
 
     return data
@@ -39,17 +39,17 @@ def coverte_formato_data(data):
 
 
 def calcula_dias_uteis(data_inicio, data_fim):
-    return np.busday_count(begindates=data_inicio, enddates=data_fim, weekmask='1111100', holidays=holidays)
+    return np.busday_count(begindates=data_inicio, enddates=data_fim, weekmask='1111100', holidays=feriados)
 
 
 def carregar_feriados():
-    holidays = []
+    feriados = []
     with open(f'{os.path.dirname(__file__)}/../data/feriados_nacionais.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';')
         for row in spamreader:
-            holidays.append(coverte_formato_data(data=row[0]))
+            feriados.append(coverte_formato_data(data=row[0]))
 
-    return holidays
+    return feriados
 
 
-holidays = carregar_feriados()
+feriados = carregar_feriados()
