@@ -5,53 +5,65 @@ from padroes import DECIMAIS_VALOR_FINANCEIRO_CUPOM
 from datetime import datetime, timedelta
 
 
-def descobrir_datas_pagamento_cupom(data_compra, data_vencimento):
-    timestamp_data_compra = datetime.strptime(data_compra, "%d/%m/%Y")
-    timestamp_data_vencimento = datetime.strptime(data_vencimento, "%d/%m/%Y")
+class TesouroPrefixadoComJurosSemetrais:
+    """Os títulos do tesouro prefixado com juros semestrais possuem fluxo de pagamento de juros semestrais."""
+    def __init__(self, data_compra, data_vencimento, valor_investido, rentabilidade_anual):
 
-    datas_pagamento_cupom = []
-    while timestamp_data_compra <= timestamp_data_vencimento:
-        if (timestamp_data_compra.month == 7 or timestamp_data_compra.month == 1) and timestamp_data_compra.day == 1:
-            data_cupom = timestamp_data_compra.strftime("%Y-%m-%d")
-            while not np.is_busday(dates=data_cupom, weekmask='1111100', holidays=calendario.feriados):
-                data_cupom = calendario.adicionar_dias_uteis(data=data_cupom, dias=1)
-            datas_pagamento_cupom.append(data_cupom)
-        timestamp_data_compra = timestamp_data_compra + timedelta(days=1)
+        self.data_compra = data_compra
+        self.data_vencimento = data_vencimento
+        self.valor_investido = valor_investido
+        self.rentabilidade_anual = rentabilidade_anual
+        self.datas_pagamento_cupom = self.descobrir_datas_pagamento_cupom()
+        self.preco_unitario = self.calcular_preco_unitario()
 
-    return datas_pagamento_cupom
+    def calcular_preco_unitario(self):
+        data_compra = calendario.coverte_formato_data(self.data_compra)
+        data_vencimento = calendario.coverte_formato_data(self.data_vencimento)
+        dias_uteis = calendario.calcula_dias_uteis(data_inicio=data_compra, data_fim=data_vencimento)
+
+        preco_unitario = 1000 / ((1 + self.rentabilidade_anual) ** (dias_uteis / 252))
+        preco_unitario = formulas.truncar(numero=preco_unitario, casas=2)
+
+        return preco_unitario
 
 
-def calculo_montante_NTNF(data_compra, data_vencimento, valor_investido, preco_unitario, rentabilidade_anual):
-    datas_pagamento_cupom = descobrir_datas_pagamento_cupom(data_compra=data_compra, data_vencimento=data_vencimento)
-    taxa_cupom = formulas.converte_tx_ano_para_semestre(taxa=0.10)
-    taxa_cupom = formulas.truncar(numero=preco_unitario, casas=DECIMAIS_VALOR_FINANCEIRO_CUPOM)
+    def descobrir_datas_pagamento_cupom(self):
+        data_compra_timestamp = datetime.strptime(self.data_compra, "%d/%m/%Y")
+        data_vencimento_timestamp = datetime.strptime(self.data_vencimento, "%d/%m/%Y")
+
+        # TODO - Precisa melhorar esse loop
+        datas_pagamento_cupom = []
+        while data_compra_timestamp <= data_vencimento_timestamp:
+            if (data_compra_timestamp.month == 7 or data_compra_timestamp.month == 1) and data_compra_timestamp.day == 1:
+                data_cupom = data_compra_timestamp.strftime("%Y-%m-%d")
+                datas_pagamento_cupom.append(data_cupom)
+            data_compra_timestamp = data_compra_timestamp + timedelta(days=1)
+        return datas_pagamento_cupom
+
+    def calcular_valor_nominal(self):
+        taxa_cupom = formulas.converte_taxa_ano_para_semestre(taxa=0.10)
+        taxa_cupom = formulas.truncar(numero=taxa_cupom, casas=4)
 
 
-    # taxa_de_negociacao = 0.0001
-    # valor_investido_bruto = valor_investido * (1 + taxa_de_negociacao)
-    # cupom_bruto = ((valor_investido_bruto / preco_unitario) * taxa_cupom) * 1000
-    # cupom_bruto = formulas.arredondar_para_cima(numero=cupom_bruto, decimais=DECIMAIS_TX_CUPOM)
-    #
-    # data_compra = calendario.coverte_formato_data(data_compra)
-    # data_vencimento = calendario.coverte_formato_data(data_vencimento)
-    # dias_corridos = pd.date_range(start=data_compra, end=data_vencimento)
-    #
-    # fluxo_de_caixa = 0
-    # for dia in dias_corridos:
-    #     if dia.strftime('%m-%d') in datas_pagamento_cupom:
-    #         fluxo_de_caixa += cupom_bruto
-    #
-    #         formulas.converte_tx_ano_para_dia(10)
-    # montante = fluxo_de_caixa + ((valor_investido / preco_unitario) * 1000)
-    #
-    # return montante
+        valor_cupom = ((self.valor_investido / self.preco_unitario) * taxa_cupom) * 1000
+        valor_cupom = formulas.truncar(numero=valor_cupom, casas=2)
+
+        data_compra = calendario.coverte_formato_data(self.data_compra)
+        dias_corridos = []
+        for dia_de_pagamento in self.datas_pagamento_cupom:
+            dias_corridos.append(calendario.calcula_dias_uteis(data_inicio=data_compra, data_fim=dia_de_pagamento))
+
+
+        print('a')
+
 
 
 if __name__ == '__main__':
-    resultado = calculo_montante_NTNF(
-        data_compra='29/10/2019',
-        data_vencimento='01/01/2029',
+    titulo_1 = TesouroPrefixadoComJurosSemetrais(
+        data_compra='20/03/2021',
+        data_vencimento='01/01/2031',
         valor_investido=2000,
-        preco_unitario=1101.43,
-        rentabilidade_anual=0.0645
+        rentabilidade_anual=0.0859
     )
+    titulo_1_valor_nominal = titulo_1.calcular_valor_nominal()
+    print(titulo_1_valor_nominal)

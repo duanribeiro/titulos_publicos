@@ -22,9 +22,9 @@ def arredondar_para_cima(numero, decimais=2):
     return math.ceil(numero * factor) / factor
 
 
-def calcula_montante_juros_compostos(valor_investido, taxa, periodo):
-    montante = valor_investido * ((1 + taxa) ** periodo)
-    return round(montante, DECIMAIS_TX_CUPOM)
+def calcula_valor_nominal_juros_compostos(valor_investido, taxa, periodo):
+    valor_nominal = valor_investido * ((1 + taxa) ** periodo)
+    return round(valor_nominal, DECIMAIS_TX_CUPOM)
 
 
 def converte_tx_ano_para_dia(taxa):
@@ -32,8 +32,5 @@ def converte_tx_ano_para_dia(taxa):
     return truncar(numero=taxa_convertida, casas=DECIMAIS_TAXAS_EQUIVALENTES)
 
 
-def converte_tx_ano_para_semestre(taxa):
+def converte_taxa_ano_para_semestre(taxa):
     return ((1 + taxa) ** (1 / 2)) - 1
-
-
-

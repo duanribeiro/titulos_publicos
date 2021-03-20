@@ -39,7 +39,7 @@ def coverte_formato_data(data):
 
 
 def calcula_dias_uteis(data_inicio, data_fim):
-    return np.busday_count(begindates=data_inicio, enddates=data_fim, weekmask='1111100', holidays=feriados)
+    return np.busday_count(begindates=data_inicio, enddates=data_fim, weekmask='1111100', holidays=feriados) + 1
 
 
 def carregar_feriados():
