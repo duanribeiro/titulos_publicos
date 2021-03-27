@@ -2,12 +2,12 @@ import math
 from padroes import DECIMAIS_TAXAS_EQUIVALENTES, DECIMAIS_TX_CUPOM
 
 
-def truncar(numero, casas):
+def truncar(numero, decimais):
     if type(numero) == int:
         return numero
 
     splitted_number = str(numero).split('.')
-    return float(f'{splitted_number[0]}.{splitted_number[1][:casas]}')
+    return float(f'{splitted_number[0]}.{splitted_number[1][:decimais]}')
 
 
 def arredondar_para_cima(numero, decimais=2):
@@ -29,7 +29,7 @@ def calcula_valor_nominal_juros_compostos(valor_investido, taxa, periodo):
 
 def converte_tx_ano_para_dia(taxa):
     taxa_convertida = ((1 + taxa) ** (1 / 252)) - 1
-    return truncar(numero=taxa_convertida, casas=DECIMAIS_TAXAS_EQUIVALENTES)
+    return truncar(numero=taxa_convertida, decimais=DECIMAIS_TAXAS_EQUIVALENTES)
 
 
 def converte_taxa_ano_para_semestre(taxa):
