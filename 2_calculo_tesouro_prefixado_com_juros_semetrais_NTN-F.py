@@ -37,9 +37,9 @@ class TesouroPrefixadoComJurosSemetrais:
         else:
             cupom_janeiro = 1
             cupom_julho = 1
-        for year in range(data_compra_timestamp.year, data_vencimento_timestamp.year):
-            datas_pagamento_cupom.append(f"{year + cupom_janeiro}-01-01")
-            datas_pagamento_cupom.append(f"{year + cupom_julho}-07-01")
+        for ano in range(data_compra_timestamp.year, data_vencimento_timestamp.year):
+            datas_pagamento_cupom.append(f"{ano + cupom_janeiro}-01-01")
+            datas_pagamento_cupom.append(f"{ano + cupom_julho}-07-01")
         if data_vencimento_timestamp.month == 1:
             datas_pagamento_cupom.pop(-1)
 
