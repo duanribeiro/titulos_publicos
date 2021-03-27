@@ -26,18 +26,23 @@ class TesouroPrefixadoComJurosSemetrais:
 
         return preco_unitario
 
-
     def descobrir_datas_pagamento_cupom(self):
         data_compra_timestamp = datetime.strptime(self.data_compra, "%d/%m/%Y")
         data_vencimento_timestamp = datetime.strptime(self.data_vencimento, "%d/%m/%Y")
 
-        # TODO - Precisa melhorar esse loop
         datas_pagamento_cupom = []
-        while data_compra_timestamp <= data_vencimento_timestamp:
-            if (data_compra_timestamp.month == 7 or data_compra_timestamp.month == 1) and data_compra_timestamp.day == 1:
-                data_cupom = data_compra_timestamp.strftime("%Y-%m-%d")
-                datas_pagamento_cupom.append(data_cupom)
-            data_compra_timestamp = data_compra_timestamp + timedelta(days=1)
+        if 1 < data_compra_timestamp.month < 7:
+            cupom_janeiro = 1
+            cupom_julho = 0
+        else:
+            cupom_janeiro = 1
+            cupom_julho = 1
+        for year in range(data_compra_timestamp.year, data_vencimento_timestamp.year):
+            datas_pagamento_cupom.append(f"{year + cupom_janeiro}-01-01")
+            datas_pagamento_cupom.append(f"{year + cupom_julho}-07-01")
+        if data_vencimento_timestamp.month == 1:
+            datas_pagamento_cupom.pop(-1)
+
         return datas_pagamento_cupom
 
     def calcular_valor_nominal(self):
@@ -60,7 +65,7 @@ class TesouroPrefixadoComJurosSemetrais:
 
 if __name__ == '__main__':
     titulo_1 = TesouroPrefixadoComJurosSemetrais(
-        data_compra='20/03/2021',
+        data_compra='20/07/2021',
         data_vencimento='01/01/2031',
         valor_investido=2000,
         rentabilidade_anual=0.0859
