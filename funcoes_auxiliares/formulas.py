@@ -1,5 +1,4 @@
 import math
-from padroes import DECIMAIS_TAXAS_EQUIVALENTES, DECIMAIS_TX_CUPOM
 
 
 def truncar(numero, decimais):
@@ -24,12 +23,12 @@ def arredondar_para_cima(numero, decimais=2):
 
 def calcula_valor_nominal_juros_compostos(valor_investido, taxa, periodo):
     valor_nominal = valor_investido * ((1 + taxa) ** periodo)
-    return round(valor_nominal, DECIMAIS_TX_CUPOM)
+    return round(valor_nominal, 2)
 
 
 def converte_tx_ano_para_dia(taxa):
     taxa_convertida = ((1 + taxa) ** (1 / 252)) - 1
-    return truncar(numero=taxa_convertida, decimais=DECIMAIS_TAXAS_EQUIVALENTES)
+    return truncar(numero=taxa_convertida, decimais=2)
 
 
 def converte_taxa_ano_para_semestre(taxa):

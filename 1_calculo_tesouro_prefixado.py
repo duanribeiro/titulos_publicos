@@ -1,5 +1,4 @@
-from helpers import calendario, formulas
-from padroes import DECIMAIS_DINHEIRO_ESPECIE
+from funcoes_auxiliares import calendario, formulas
 
 
 class TesouroPrefixado:
@@ -15,13 +14,13 @@ class TesouroPrefixado:
         data_vencimento = calendario.coverte_formato_data(self.data_vencimento)
         dias_uteis = calendario.calcula_dias_uteis(data_inicio=data_compra, data_fim=data_vencimento)
         preco_unitario = 1000 / ((1 + self.rentabilidade_anual) ** (dias_uteis / 252))
-        preco_unitario = formulas.truncar(numero=preco_unitario, decimais=DECIMAIS_DINHEIRO_ESPECIE)
+        preco_unitario = formulas.truncar(numero=preco_unitario, decimais=2)
 
         return preco_unitario
 
     def calcular_valor_nominal(self):
         valor_nominal = (self.valor_investido / self.preco_unitario) * 1000
-        valor_nominal = formulas.arredondar_para_cima(numero=valor_nominal, decimais=DECIMAIS_DINHEIRO_ESPECIE)
+        valor_nominal = formulas.arredondar_para_cima(numero=valor_nominal, decimais=2)
 
         return valor_nominal
 
