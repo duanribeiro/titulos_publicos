@@ -3,7 +3,6 @@ from datetime import datetime
 
 
 class TesouroPrefixadoComJurosSemetrais:
-    """Os títulos do tesouro prefixado com juros semestrais possuem fluxo de pagamento de juros semestrais."""
     def __init__(self, data_compra, data_vencimento, valor_investido, rentabilidade_anual, preco_unitario=None):
 
         self.data_compra = data_compra

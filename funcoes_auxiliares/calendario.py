@@ -44,7 +44,7 @@ def calcula_dias_uteis(data_inicio, data_fim):
 
 def carregar_feriados():
     feriados = []
-    with open(f'{os.path.dirname(__file__)}/../data/feriados_nacionais.csv', newline='') as csvfile:
+    with open(f'{os.path.dirname(__file__)}/../dados_externos/feriados_nacionais.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';')
         for row in spamreader:
             feriados.append(coverte_formato_data(data=row[0]))

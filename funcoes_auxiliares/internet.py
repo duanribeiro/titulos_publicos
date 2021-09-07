@@ -1,12 +1,10 @@
-import os
-import csv
-from datetime import datetime
+from funcoes_auxiliares import formulas
 import requests
 from bs4 import BeautifulSoup
 
 
 def requisicao_valor_nominal_atualizado():
-    formdata = {
+    dados = {
         'Data': '29032021',
         'escolha': '1',
         'Idioma': 'PT',
@@ -14,26 +12,20 @@ def requisicao_valor_nominal_atualizado():
         'Dt_Ref_Ver': '20210322',
         'Inicio': '29 / 03 / 2021'
     }
-    from lxml import html
 
-    html_response = requests.post('https://www.anbima.com.br/informacoes/vna/vna.asp', data=formdata)
-    # soup = BeautifulSoup(html_response, 'html.parser')
-    tree = html.fromstring(html_response.text)
-    buyers = tree.xpath('//*[@id="listaLFT"]/center/table/tbody/tr[4]/td[2]')
-    print(r.text)
+    resposta_http = requests.post('https://www.anbima.com.br/informacoes/vna/vna.asp', data=dados)
+    resposta_html = BeautifulSoup(resposta_http.text, 'html.parser')
+    vna_ipca_com_juros = resposta_html.select('tr')[8].select('td')[1].text
+    vna_selic = resposta_html.select('tr')[19].select('td')[1].text
+
+    vna_ipca_com_juros = float(vna_ipca_com_juros.replace('.', '').replace(',', '.'))
+    vna_selic = float(vna_selic.replace('.', '').replace(',', '.'))
+    vna_ipca_com_juros = formulas.truncar(numero=vna_ipca_com_juros, decimais=2)
+    vna_selic = formulas.truncar(numero=vna_selic, decimais=2)
+
+    return {
+        'vna_ipca_com_juros': vna_ipca_com_juros,
+        'vna_selic': vna_selic
+    }
 
 
-def carregar_taxas_selic():
-    taxas_selic = {}
-    taxas_selic['dia'] = []
-    taxas_selic['taxa'] = []
-
-    with open(f'{os.path.dirname(__file__)}/../dados_externos/taxa_selic.csv', newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=';')
-        for row in spamreader:
-            dia = datetime.strptime(row[0], "%d/%m/%Y")
-            taxa = float(row[1].replace(',', '.')) - 1
-            taxas_selic['dia'].append(dia)
-            taxas_selic['taxa'].append(taxa)
-
-    return taxas_selic
